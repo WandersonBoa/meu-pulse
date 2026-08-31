@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Pulse — WIN / WDO / DI</title>
+    <style>
+        *{margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif;}
+        :root{
+            --bg:#0f1115; --card:#1a1d23; --border:#2a2d34;
+            --green:#00c853; --red:#f44336; --fucsia:#d81b60;
+            --yellow:#ffc107; --blue:#2196f3; --lime:#00e676;
+            --text:#e0e0e0; --muted:#888;
+        }
+        body{background:var(--bg); color:var(--text); padding:15px; max-width:1400px; margin:0 auto;}
+        h1{text-align:center; margin-bottom:20px; color:var(--yellow); font-size:1.5rem;}
+        .atualizacao{text-align:center; color:var(--muted); font-size:.85rem; margin-bottom:20px;}
+        .grid-top{display:grid; grid-template-columns:1fr; gap:20px; margin-bottom:25px;}
+        @media(min-width:900px){.grid-top{grid-template-columns:1fr 1fr 1fr;}}
+        .card{background:var(--card); border-radius:12px; padding:20px; box-shadow:0 4px 15px rgba(0,0,0,.3);}
+        .card-title{font-size:1.1rem; font-weight:bold; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;}
+        .card-title .tag{font-size:.75rem; padding:3px 8px; border-radius:4px;}
+        
+        /* === MEDIDORES — SEU INDICADOR ORIGINAL === */
+        .value-display{font-size:2.2rem; font-weight:bold; text-align:center; margin:10px 0;}
+        .gauge-container{position:relative; height:36px; background:var(--border); border-radius:18px; margin:15px 0; overflow:hidden;}
+        .gauge-fill{height:100%; border-radius:18px; transition:all .4s ease; width:0; position:absolute; left:50%;}
+        .gauge-marker{position:absolute; top:0; bottom:0; width:1px; background:#444; z-index:2;}
+        .zero-line{position:absolute; top:0; bottom:0; width:2px; background:#fff; left:50%; transform:translateX(-50%); z-index:3;}
+        .ref-lines{display:flex; justify-content:space-between; font-size:.7rem; color:var(--muted); margin-top:5px; padding:0 5px;}
+        .di-media{margin-top:15px; padding-top:12px; border-top:1px solid var(--border); font-size:.9rem;}
+        .di-media span{color:var(--fucsia); font-weight:bold;}
+        .status{margin-top:10px; padding:8px; border-radius:6px; text-align:center; font-weight:bold; font-size:.9rem;}
+        
+        /* === SUPORTES & RESISTÊNCIAS — ESTILO PULSE === */
+        .zones-container{display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:25px;}
+        .zone-block{background:var(--card); border-radius:12px; padding:18px;}
+        .zone-block h3{font-size:1rem; margin-bottom:15px; padding-bottom:8px; border-bottom:1px solid var(--border);}
+        .suportes h3{color:var(--green);}
+        .resistencias h3{color:var(--red);}
+        .zone-item{margin-bottom:15px;}
+        .zone-header{display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:5px;}
+        .zone-price{font-weight:bold; font-size:1rem;}
+        .bar-container{height:10px; background:var(--border); border-radius:5px; overflow:hidden; display:flex; margin:5px 0;}
+        .bar-ie{height:100%; transition:width .5s ease;}
+        .bar-pf{height:100%; transition:width .5s ease;}
+        .zone-label{font-size:.75rem; color:var(--muted); margin-top:4px;}
+        .zone-obs{font-size:.8rem; margin-top:8px; padding:6px 10px; border-radius:6px;}
+        .suportes .zone-obs{background:rgba(0,200,83,.1); color:var(--lime);}
+        .resistencias .zone-obs{background:rgba(244,67,54,.1); color:#ff6b6b;}
+        
+        /* === GRÁFICO FLUXO IE/II/PF === */
+        .fluxo-card{background:var(--card); border-radius:12px; padding:20px; margin-bottom:20px;}
+        .fluxo-legenda{display:flex; gap:20px; justify-content:center; margin-bottom:15px; flex-wrap:wrap;}
+        .legenda-item{display:flex; align-items:center; gap:6px; font-size:.9rem;}
+        .legenda-dot{width:12px; height:12px; border-radius:50%; display:inline-block;}
+        .grafico-wrapper{position:relative; height:220px; background:var(--bg); border-radius:8px; overflow:hidden;}
+        canvas{width:100%; height:100%; display:block;}
+        
+        /* === CONTROLES === */
+        .controles{text-align:center; margin-top:20px;}
+        button{background:var(--border); color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-size:.95rem; transition:all .2s;}
+        button:hover{background:#3a3d44;}
+        .auto-refresh{color:var(--muted); font-size:.85rem; margin-top:8px;}
+    </style>
+</head>
+<body>
+
+<h1>📊 NOSSO PULSE — WIN / WDO / DI</h1>
+<div class="atualizacao">Última atualização: <span id="last-update">—</span> | 🔄 Atualização automática: 30s</div>
+
+<!-- === PARTE 1 — SEU INDICADOR: MEDIDORES WIN/WDO/DI === -->
+<div class="grid-top">
+    <!-- WINFUT -->
+    <div class="card">
+        <div class="card-title" style="color:var(--green);">WINFUT <span class="tag" style="background:rgba(0,200,83,.2);">Índice</span></div>
+        <div class="value-display" id="win-value">0.00%</div>
+        <div class="gauge-container">
+            <div class="gauge-marker" style="left:16.66%;"></div>
+            <div class="gauge-marker" style="left:25%;"></div>
+            <div class="gauge-marker" style="left:33.33%;"></div>
+            <div class="zero-line"></div>
+            <div class="gauge-marker" style="left:66.66%;"></div>
+            <div class="gauge-marker" style="left:75%;"></div>
+            <div class="gauge-marker" style="left:83.33%;"></div>
+            <div class="gauge-fill" id="win-gauge" style="background:var(--green);"></div>
+        </div>
+        <div class="ref-lines">
+            <span>-3%</span><span>-2%</span><span>-1%</span><span>0</span><span>+1%</span><span>+2%</span><span>+3%</span>
+        </div>
+        <div class="status" id="win-status"></div>
+    </div>
+
+    <!-- WDOFUT -->
+    <div class="card">
+        <div class="card-title" style="color:var(--red);">WDOFUT <span class="tag" style="background:rgba(244,67,54,.2);">Dólar</span></div>
+        <div class="value-display" id="wdo-value">0.00%</div>
+        <div class="gauge-container">
+            <div class="gauge-marker" style="left:16.66%;"></div>
+            <div class="gauge-marker" style="left:25%;"></div>
+            <div class="gauge-marker" style="left:33.33%;"></div>
+            <div class="zero-line"></div>
+            <div class="gauge-marker" style="left:66.66%;"></div>
+            <div class="gauge-marker" style="left:75%;"></div>
+            <div class="gauge-marker" style="left:83.33%;"></div>
+            <div class="gauge-fill" id="wdo-gauge" style="background:var(--red);"></div>
+        </div>
+        <div class="ref-lines">
+            <span>-3%</span><span>-2%</span><span>-1%</span><span>0</span><span>+1%</span><span>+2%</span><span>+3%</span>
+        </div>
+        <div class="status" id="wdo-status"></div>
+    </div>
+
+    <!-- DI1FUT -->
+    <div class="card">
+        <div class="card-title" style="color:var(--fucsia);">DI1FUT <span class="tag" style="background:rgba(216,27,96,.2);">Futuro DI</span></div>
+        <div class="value-display" id="di-value">0.00%</div>
+        <div class="gauge-container">
+            <div class="gauge-marker" style="left:16.66%;"></div>
+            <div class="gauge-marker" style="left:25%;"></div>
+            <div class="gauge-marker" style="left:33.33%;"></div>
+            <div class="zero-line"></div>
+            <div class="gauge-marker" style="left:66.66%;"></div>
+            <div class="gauge-marker" style="left:75%;"></div>
+            <div class="gauge-marker" style="left:83.33%;"></div>
+            <div class="gauge-fill" id="di-gauge" style="background:var(--fucsia);"></div>
+        </div>
+        <div class="ref-lines">
+            <span>-3%</span><span>-2%</span><span>-1%</span><span>0</span><span>+1%</span><span>+2%</span><span>+3%</span>
+        </div>
+        <div class="di-media">📈 Média Móvel (17): <span id="di-media-val">0.00%</span></div>
+        <div class="status" id="di-status"></div>
+    </div>
+</div>
+
+<!-- === PARTE 2 — SUPORTES & RESISTÊNCIAS (ESTILO PULSE) === -->
+<div class="zones-container">
+    <div class="zone-block suportes">
+        <h3>🟩 SUPORTES — Zonas de Compra</h3>
+        <div id="suporte-1" class="zone-item">
+            <div class="zone-header"><span class="zone-price">R$ —</span><span>Top 1</span></div>
+            <div class="bar-container">
+                <div class="bar-ie" style="background:var(--yellow); width:60%;"></div>
+                <div class="bar-pf" style="background:var(--green); width:40%;"></div>
+            </div>
+            <div class="zone-label">🟡 IE: 60% | 🟢 PF: 40%</div>
+            <div class="zone-obs">Institucional lidera compras</div>
+        </div>
+        <div id="suporte-2" class="zone-item">
+            <div class="zone-header"><span class="zone-price">R$ —</span><span>Top 2</span></div>
+            <div class="bar-container">
+                <div class="bar-ie" style="background:var(--yellow); width:35%;"></div>
+                <div class="bar-pf" style="background:var(--green); width:65%;"></div>
+            </div>
+            <div class="zone-label">🟡 IE: 35% | 🟢 PF: 65%</div>
+            <div class="zone-obs">Pessoa Física lidera</div>
+        </div>
+    </div>
+
+    <div class="zone-block resistencias">
+        <h3>🟥 RESISTÊNCIAS — Zonas de Venda</h3>
+        <div id="resistencia-1" class="zone-item">
+            <div class="zone-header"><span class="zone-price">R$ —</span><span>Top 1</span></div>
+            <div class="bar-container">
+                <div class="bar-ie" style="background:var(--yellow); width:45%;"></div>
+                <div class="bar-pf" style="background:var(--red); width:55%;"></div>
+            </div>
+            <div class="zone-label">🟡 IE: 45% | 🔴 PF: 55%</div>
+            <div class="zone-obs">Pessoa Física lidera vendas</div>
+        </div>
+        <div id="resistencia-2" class="zone-item">
+            <div class="zone-header"><span class="zone-price">R$ —</span><span>Top 2</span></div>
+            <div class="bar-container">
+                <div class="bar-ie" style="background:var(--yellow); width:70%;"></div>
+                <div class="bar-pf" style="background:var(--red); width:30%;"></div>
+            </div>
+            <div class="zone-label">🟡 IE: 70% | 🔴 PF: 30%</div>
+            <div class="zone-obs">Institucional dominante</div>
+        </div>
+    </div>
+</div>
+
+<!-- === PARTE 3 — GRÁFICO FLUXO IE / II / PF === -->
+<div class="fluxo-card">
+    <h3 style="text-align:center; margin-bottom:10px; color:var(--yellow);">📈 PERFIL INTRADAY — Fluxo Acumulado</h3>
+    <div class="fluxo-legenda">
+        <div class="legenda-item"><span class="legenda-dot" style="background:var(--yellow);"></span> IE — Institucional</div>
+        <div class="legenda-item"><span class="legenda-dot" style="background:var(--blue);"></span> II — Intermediários</div>
+        <div class="legenda-item"><span class="legenda-dot" style="background:var(--green);"></span> PF — Pessoa Física</div>
+    </div>
+    <div class="grafico-wrapper">
+        <canvas id="fluxo-chart"></canvas>
+    </div>
+</div>
+
+<!-- === CONTROLES === -->
+<div class="controles">
+    <button onclick="atualizarTudo()">🔄 Atualizar Agora</button>
+    <p class="auto-refresh">⏱️ Atualização automática a cada 30 segundos</p>
+</div>
+
+<script>
+// === CONFIGURAÇÕES ===
+const PERIODO_MEDIA_DI = 17;
+const LIMITE_MAX = 3.5;
+let historicoDI = [];
+let fluxoIE = [], fluxoII = [], fluxoPF = [];
+let tempoLabels = [];
+let contadorAtualizacoes = 0;
+
+// === INICIALIZAR HISTÓRICOS ===
+function inicializarHistoricos() {
+    historicoDI = [];
+    fluxoIE = []; fluxoII = []; fluxoPF = []; tempoLabels = [];
+    for(let i=0; i<PERIODO_MEDIA_DI; i++) historicoDI.push((Math.random()*2-1));
+    for(let i=0; i<20; i++){
+        fluxoIE.push(Math.random()*100-50);
+        fluxoII.push(Math.random()*60-30);
+        fluxoPF.push(Math.random()*80-40);
+        tempoLabels.push('');
+    }
+}
+
+// === CALCULAR POSIÇÃO NO MEDIDOR ===
+function calcularPosicao(valor){
+    const p = Math.max(-LIMITE_MAX, Math.min(LIMITE_MAX, valor));
+    return 50 + (p/LIMITE_MAX)*50;
+}
+
+// === ATUALIZAR MEDIDOR ===
+function atualizarGauge(id, valor, cor){
+    const fill = document.getElementById(${id}-gauge);
+    const display = document.getElementById(${id}-value);
+    const status = document.getElementById(${id}-status);
+    const pos = calcularPosicao(valor);
+    const larg = Math.abs(pos-50);
+    
+    fill.style.left = valor >= 0 ? '50%' : (pos - larg) + '%';
+    fill.style.width = larg + '%';
+    display.textContent = valor.toFixed(2) + '%';
+    display.style.color = cor;
+    
+    if(valor > 0.1){
+        status.textContent = '🔼 ALTA';
+        status.style.background = cor+'22';
+        status.style.color = cor;
+    } else if(valor < -0.1){
+        status.textContent = '🔽 BAIXA';
+        status.style.background = 'rgba(244,67,54,.2)';
+        status.style.color = 'var(--red)';
+    } else {
+        status.textContent = '➖ ESTÁVEL';
+        status.style.background = 'rgba(255,255,255,.1)';
+        status.style.color = '#fff';
+    }
+}
+
+// === CALCULAR MÉDIA MÓVEL ===
+function calcularMediaMovel(novo){
+    historicoDI.push(novo);
+    if(historicoDI.length > PERIODO_MEDIA_DI) historicoDI.shift();
+    return historicoDI.reduce((a,b)=>a+b,0)/historicoDI.length;
+}
+
+// === ATUALIZAR ZONAS DE SUPORTE/RESISTÊNCIA ===
+function atualizarZonas(){
+    const precosSup = ['118500', '118200'];
+    const precosRes = ['119200', '119500'];
+    for(let i=1; i<=2; i++){
+        const ieSup = Math.round(30 + Math.random()*50);
+        const pfSup = 100 - ieSup;
+        document.querySelector(#suporte-${i} .zone-price).textContent = precosSup[i-1];
+        document.querySelector(#suporte-${i} .bar-ie).style.width = ieSup + '%';
+        document.querySelector(#suporte-${i} .bar-pf).style.width = pfSup + '%';
+        document.querySelector(#suporte-${i} .zone-label).textContent = 🟡 IE: ${ieSup}% | 🟢 PF: ${pfSup}%;
+        
+        const ieRes = Math.round(30 + Math.random()*50);
+        const pfRes = 100 - ieRes;
+        document.querySelector(#resistencia-${i} .zone-price).textContent = precosRes[i-1];
+        document.querySelector(#resistencia-${i} .bar-ie).style.width = ieRes + '%';
+        document.querySelector(#resistencia-${i} .bar-pf).style.width = pfRes + '%';
+        document.querySelector(#resistencia-${i} .zone-label).textContent = 🟡 IE: ${ieRes}% | 🔴 PF: ${pfRes}%;
+    }
+}
+
+// === ATUALIZAR GRÁFICO FLUXO ===
+function atualizarGrafico(){
+    const canvas = document.getElementById('fluxo-chart');
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * window.devicePixelRatio;
+    canvas.height = rect.height * window.devicePixelRatio;
+    const w = canvas.width, h = canvas.height;
+    const padding = {t:20, r:20, b:20, l:40};
+    ctx.clearRect(0,0,w,h);
+    
+    // Adiciona novo ponto
+    fluxoIE.push(fluxoIE[fluxoIE.length-1] + (Math.random()*10-5));
+    fluxoII.push(fluxoII[fluxoII.length-1] + (Math.random()*6-3));
+    fluxoPF.push(fluxoPF[fluxoPF.length-1] + (Math.random()*8-4));
+    if(fluxoIE.length > 30){
+        fluxoIE.shift(); fluxoII.shift(); fluxoPF.shift();
+    }
+    
+    // Escala
+    const todos = [...fluxoIE, ...fluxoII, ...fluxoPF];
+    const max = Math.max(...todos.map(Math.abs)) || 50;
+    const gW = w - padding.l - padding.r;
+    const gH = h - padding.t - padding.b;
+    const escalaY = (v) => padding.t + gH/2 - (v/max) * (gH/2);
+    const escalaX = (i) => padding.l + (i/(fluxoIE.length-1 || 1)) * gW;
+    
+    // Linha zero
+    ctx.beginPath();
+    ctx.moveTo(padding.l, escalaY(0));
+    ctx.lineTo(w-padding.r, escalaY(0));
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Desenha linhas
+    function desenhaLinha(dados, cor){
+        ctx.beginPath();
+        for(let i=0; i<dados.length; i++){
+            const x = escalaX(i);
+            const y = escalaY(dados[i]);
+            i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        }
+        ctx.strokeStyle = cor;
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+    }
+    desenhaLinha(fluxoIE, '#ffc107');
+    desenhaLinha(fluxoII, '#2196f3');
+    desenhaLinha(fluxoPF, '#00c853');
+}
+
+// === FUNÇÃO PRINCIPAL — ATUALIZA TUDO ===
+function atualizarTudo(){
+    contadorAtualizacoes++;
+    
+    // Valores simulados (depois conectar API real)
+    const varWin = +(Math.random()*4-2).toFixed(2);
+    const varWdo = +(Math.random()*4-2).toFixed(2);
+    const varDi = +(Math.random()*4-2).toFixed(2);
+    
+    // Atualiza medidores
+    atualizarGauge('win', varWin, 'var(--green)');
+    atualizarGauge('wdo', varWdo, 'var(--red)');
+    atualizarGauge('di', varDi, 'var(--fucsia)');
+    
+    // Média DI
+    const mediaDi = calcularMediaMovel(varDi);
+    document.getElementById('di-media-val').textContent = mediaDi.toFixed(4) + '%';
+    const diStatus = document.getElementById('di-status');
+    if(varDi > mediaDi + 0.01){
+        diStatus.textContent = '🟢 DI ACIMA DA MÉDIA — Compra';
+        diStatus.style.background = 'rgba(0,230,118,.2)';
+        diStatus.style.color = 'var(--lime)';
+    } else if(varDi < mediaDi - 0.01){
+        diStatus.textContent = '🔴 DI ABAIXO DA MÉDIA — Venda';
+        diStatus.style.background = 'rgba(244,67,54,.2)';
+        diStatus.style.color = 'var(--red)';
+    } else {
+        diStatus.textContent = '➖ DI = Média — Neutro';
+        diStatus.style.background = 'rgba(255,255,255,.1)';
+        diStatus.style.color = '#fff';
+    }
+    
+    // Zonas e gráfico
+    atualizarZonas();
+    atualizarGrafico();
+    
+    // Hora
+    document.getElementById('last-update').textContent = new Date().toLocaleTimeString('pt-BR');
+}
+
+// === INICIALIZAÇÃO ===
+document.addEventListener('DOMContentLoaded', () => {
+    inicializarHistoricos();
+    atualizarTudo();
+    setInterval(atualizarTudo, 30000); // Auto a cada 30s
+});
+</script>
+
+</body>
+</html>
