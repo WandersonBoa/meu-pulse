@@ -52,7 +52,7 @@
 <body>
 
 <h1>📊 NOSSO PULSE — DADOS REAIS B3</h1>
-<div class="atualizacao">Última atualização: <span id="last-update">—</span> | ⏱️ Atualização: 30s | 🔗 Fonte: Alpha Vantage / B3</div>
+<div class="atualizacao">Última atualização: <span id="last-update">—</span> | ⏱️ Atualização: 30s | 🔗 Fonte: HG Finance / B3</div>
 
 <div class="grid-top">
     <div class="card">
@@ -78,15 +78,15 @@
     </div>
 
     <div class="card">
-        <div class="card-title" style="color:var(--fucsia);">DI FUTURO <span class="tag">Taxa Referência</span></div>
-        <div class="value-display" id="di-value">Em breve...</div>
+        <div class="card-title" style="color:var(--fucsia);">SELIC <span class="tag">Taxa Referência</span></div>
+        <div class="value-display" id="di-value">Carregando...</div>
         <div class="gauge-container">
             <div class="zero-line"></div>
             <div class="gauge-fill" id="di-gauge" style="background:var(--fucsia);"></div>
         </div>
-        <div class="ref-lines"><span>-3%</span><span>-2%</span><span>-1%</span><span>0</span><span>+1%</span><span>+2%</span><span>+3%</span></div>
-        <div class="di-media">📈 Média Móvel (17): <span id="di-media-val">—</span></div>
-        <div class="status" id="di-status">API em ajuste</div>
+        <div class="ref-lines"><span>-1%</span><span>-0.5%</span><span>0</span><span>+0.5%</span><span>+1%</span></div>
+        <div class="di-media">📈 Taxa: <span id="di-media-val">—</span>% ao ano</div>
+        <div class="status" id="di-status">Conectando...</div>
     </div>
 </div>
 
@@ -136,26 +136,18 @@
 
 <div class="controles">
     <button onclick="atualizarTudo()">🔄 Atualizar Agora</button>
-    <p class="aviso">⚠️ Grátis — limite 5 requisições/minuto | 500/dia</p>
+    <p class="aviso">⚠️ Grátis — HG Finance | Dados em tempo real</p>
 </div>
 
 <script>
-// ==============================================
-// 🔑 CHAVE JÁ INSERIDA — PRONTO PRA USAR!
-const API_KEY = "3VZ8TUTI59GSW3WZ";
-// ==============================================
-
-const PERIODO_MEDIA_DI = 17;
+// === CONFIGURAÇÕES ===
 const LIMITE_MAX = 3.5;
-let historicoDI = [];
+let precoAbertura = { ibov: null, dolar: null };
 let fluxoIE = [], fluxoII = [], fluxoPF = [];
-let precoAbertura = { win: null, wdo: null, di: null };
 
 // === INICIALIZAÇÃO ===
-function inicializarHistoricos() {
-    historicoDI = [];
+function inicializar() {
     fluxoIE = []; fluxoII = []; fluxoPF = [];
-    for(let i=0; i<PERIODO_MEDIA_DI; i++) historicoDI.push(0);
     for(let i=0; i<20; i++){
         fluxoIE.push(0); fluxoII.push(0); fluxoPF.push(0);
     }
@@ -260,43 +252,57 @@ function atualizarGrafico() {
     desenhaLinha(fluxoPF, '#00c853');
 }
 
-// === FUNÇÃO PRINCIPAL — 100% CORRIGIDA ===
+// === FUNÇÃO PRINCIPAL — API HG FINANCE (DADOS BRASILEIROS REAIS) ===
 async function atualizarTudo() {
     document.getElementById('last-update').textContent = 'Atualizando...';
     
     try {
-        // === 1. IBOVESPA ===
-        const urlIbov = https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBOV&apikey=${API_KEY};
-        const respIbov = await fetch(urlIbov);
-        const dadosIbov = await respIbov.json();
+        // === BUSCA TODOS OS DADOS DE UMA VEZ — HG FINANCE ===
+        const url = https://api.hgbrasil.com/finance?format=json-cors&key=75d9648c;
+        const resp = await fetch(url);
+        const dados = await resp.json();
         
-        if (dadosIbov['Global Quote'] && dadosIbov['Global Quote']['05. price']) {
-            const precoAtual = parseFloat(dadosIbov['Global Quote']['05. price']);
-            const fechamentoAnterior = parseFloat(dadosIbov['Global Quote']['08. previous close']);
-            const variacao = ((precoAtual / fechamentoAnterior) - 1) * 100;
-            atualizarGauge('win', variacao, 'var(--green)', 'IBOV');
+        if (dados && dados.results) {
+            const cotacoes = dados.results.currencies;
+            const indices = dados.results;
+            
+            // === 1. IBOVESPA ===
+            if (indices.stocks && indices.stocks.Ibovespa) {
+                const ibov = indices.stocks.Ibovespa;
+                const variacao = ibov.variation;
+                atualizarGauge('win', variacao, 'var(--green)', 'IBOV');
+                document.getElementById('win-value').textContent = ${ibov.points.toFixed(0)};
+            } else {
+                document.getElementById('win-status').textContent = 'Ibovespa indisponível';
+            }
+            
+            // === 2. DÓLAR ===
+            if (cotacoes && cotacoes.USD) {
+                const dolar = cotacoes.USD;
+                if (!precoAbertura.dolar) precoAbertura.dolar = dolar.buy;
+                const variacao = ((dolar.buy / precoAbertura.dolar) - 1) * 100;
+                atualizarGauge('wdo', variacao, 'var(--red)', 'DÓLAR');
+                document.getElementById('wdo-value').textContent = R$ ${dolar.buy.toFixed(4)};
+            } else {
+                document.getElementById('wdo-status').textContent = 'Dólar indisponível';
+            }
+            
+            // === 3. SELIC (no lugar do DI) ===
+            if (dados.results.taxes && dados.results.taxes[0]) {
+                const selic = dados.results.taxes[0];
+                document.getElementById('di-value').textContent = ${selic.rate}%;
+                document.getElementById('di-media-val').textContent = selic.rate;
+                document.getElementById('di-status').textContent = '✅ SELIC em tempo real';
+                document.getElementById('di-status').style.background = 'rgba(216,27,96,.2)';
+                document.getElementById('di-status').style.color = 'var(--fucsia)';
+            }
         } else {
-            console.log('Resposta IBOV:', dadosIbov);
-            document.getElementById('win-status').textContent = 'Símbolo IBOV indisponível';
-        }
-
-        // === 2. DÓLAR ===
-        const urlDolar = https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=BRL&apikey=${API_KEY};
-        const respDolar = await fetch(urlDolar);
-        const dadosDolar = await respDolar.json();
-        
-        if (dadosDolar['Realtime Currency Exchange Rate']) {
-            const precoAtual = parseFloat(dadosDolar['Realtime Currency Exchange Rate']['5. Exchange Rate']);
-            if (!precoAbertura.wdo) precoAbertura.wdo = precoAtual;
-            const variacao = ((precoAtual / precoAbertura.wdo) - 1) * 100;
-            atualizarGauge('wdo', variacao, 'var(--red)', 'DÓLAR');
-            document.getElementById('wdo-value').textContent = R$ ${precoAtual.toFixed(4)};
-        } else {
-            console.log('Resposta Dólar:', dadosDolar);
-            document.getElementById('wdo-status').textContent = 'Dólar indisponível';
+            console.log('Resposta API:', dados);
+            document.getElementById('win-status').textContent = 'API sem resposta';
         }
     } catch (erro) {
         console.log('Erro geral:', erro);
+        document.getElementById('win-status').textContent = 'Erro de conexão';
     }
     
     atualizarZonas();
@@ -306,7 +312,7 @@ async function atualizarTudo() {
 
 // === INICIALIZAÇÃO ===
 document.addEventListener('DOMContentLoaded', () => {
-    inicializarHistoricos();
+    inicializar();
     atualizarTudo();
     setInterval(atualizarTudo, 30000); // Auto a cada 30s
 });
