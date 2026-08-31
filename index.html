@@ -252,56 +252,53 @@ function atualizarGrafico() {
     desenhaLinha(fluxoPF, '#00c853');
 }
 
-// === FUNÇÃO PRINCIPAL — API HG FINANCE (DADOS BRASILEIROS REAIS) ===
+// === FUNÇÃO PRINCIPAL — SEM ERROS DE SINTAXE ===
 async function atualizarTudo() {
     document.getElementById('last-update').textContent = 'Atualizando...';
     
     try {
-        // === BUSCA TODOS OS DADOS DE UMA VEZ — HG FINANCE ===
-        const url = https://api.hgbrasil.com/finance?format=json-cors&key=75d9648c;
+        // === BUSCA DADOS — HG FINANCE ===
+        const url = 'https://api.hgbrasil.com/finance?format=json-cors&key=75d9648c';
         const resp = await fetch(url);
         const dados = await resp.json();
         
         if (dados && dados.results) {
             const cotacoes = dados.results.currencies;
-            const indices = dados.results;
             
-            // === 1. IBOVESPA ===
-            if (indices.stocks && indices.stocks.Ibovespa) {
-                const ibov = indices.stocks.Ibovespa;
-                const variacao = ibov.variation;
-                atualizarGauge('win', variacao, 'var(--green)', 'IBOV');
-                document.getElementById('win-value').textContent = ${ibov.points.toFixed(0)};
-            } else {
-                document.getElementById('win-status').textContent = 'Ibovespa indisponível';
-            }
-            
-            // === 2. DÓLAR ===
+            // === 1. DÓLAR ===
             if (cotacoes && cotacoes.USD) {
                 const dolar = cotacoes.USD;
                 if (!precoAbertura.dolar) precoAbertura.dolar = dolar.buy;
                 const variacao = ((dolar.buy / precoAbertura.dolar) - 1) * 100;
                 atualizarGauge('wdo', variacao, 'var(--red)', 'DÓLAR');
-                document.getElementById('wdo-value').textContent = R$ ${dolar.buy.toFixed(4)};
+                document.getElementById('wdo-value').textContent = 'R$ ' + dolar.buy.toFixed(4);
             } else {
                 document.getElementById('wdo-status').textContent = 'Dólar indisponível';
             }
             
-            // === 3. SELIC (no lugar do DI) ===
+            // === 2. IBOVESPA ===
+            if (dados.results.stocks && dados.results.stocks.Ibovespa) {
+                const ibov = dados.results.stocks.Ibovespa;
+                atualizarGauge('win', ibov.variation, 'var(--green)', 'IBOV');
+                document.getElementById('win-value').textContent = ibov.points.toFixed(0);
+            } else {
+                document.getElementById('win-status').textContent = 'Ibovespa indisponível';
+            }
+            
+            // === 3. SELIC ===
             if (dados.results.taxes && dados.results.taxes[0]) {
                 const selic = dados.results.taxes[0];
-                document.getElementById('di-value').textContent = ${selic.rate}%;
+                document.getElementById('di-value').textContent = selic.rate + '%';
                 document.getElementById('di-media-val').textContent = selic.rate;
                 document.getElementById('di-status').textContent = '✅ SELIC em tempo real';
                 document.getElementById('di-status').style.background = 'rgba(216,27,96,.2)';
                 document.getElementById('di-status').style.color = 'var(--fucsia)';
             }
         } else {
-            console.log('Resposta API:', dados);
             document.getElementById('win-status').textContent = 'API sem resposta';
         }
     } catch (erro) {
-        console.log('Erro geral:', erro);
+        console.log('Erro:', erro);
         document.getElementById('win-status').textContent = 'Erro de conexão';
     }
     
@@ -311,10 +308,10 @@ async function atualizarTudo() {
 }
 
 // === INICIALIZAÇÃO ===
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     inicializar();
     atualizarTudo();
-    setInterval(atualizarTudo, 30000); // Auto a cada 30s
+    setInterval(atualizarTudo, 30000);
 });
 </script>
 
