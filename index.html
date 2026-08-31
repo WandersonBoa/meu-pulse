@@ -52,22 +52,11 @@
 <body>
 
 <h1>📊 NOSSO PULSE — DADOS REAIS B3</h1>
-<div class="atualizacao">Última atualização: <span id="last-update">—</span> | ⏱️ Atualização: 30s | 🔗 Fonte: HG Finance / B3</div>
+<div class="atualizacao">Última atualização: <span id="last-update">—</span> | ⏱️ Atualização: 60s | 🔗 Fonte: Alpha Vantage / ExchangeRate</div>
 
 <div class="grid-top">
     <div class="card">
-        <div class="card-title" style="color:var(--green);">IBOVESPA <span class="tag">Índice B3</span></div>
-        <div class="value-display" id="win-value">Carregando...</div>
-        <div class="gauge-container">
-            <div class="zero-line"></div>
-            <div class="gauge-fill" id="win-gauge" style="background:var(--green);"></div>
-        </div>
-        <div class="ref-lines"><span>-3%</span><span>-2%</span><span>-1%</span><span>0</span><span>+1%</span><span>+2%</span><span>+3%</span></div>
-        <div class="status" id="win-status">Conectando...</div>
-    </div>
-
-    <div class="card">
-        <div class="card-title" style="color:var(--red);">DÓLAR USD/BRL <span class="tag">Câmbio</span></div>
+        <div class="card-title" style="color:var(--green);">DÓLAR USD/BRL <span class="tag">Câmbio</span></div>
         <div class="value-display" id="wdo-value">Carregando...</div>
         <div class="gauge-container">
             <div class="zero-line"></div>
@@ -78,15 +67,25 @@
     </div>
 
     <div class="card">
-        <div class="card-title" style="color:var(--fucsia);">SELIC <span class="tag">Taxa Referência</span></div>
-        <div class="value-display" id="di-value">Carregando...</div>
+        <div class="card-title" style="color:var(--blue);">EURO/BRL <span class="tag">Câmbio</span></div>
+        <div class="value-display" id="eur-value">Carregando...</div>
         <div class="gauge-container">
             <div class="zero-line"></div>
-            <div class="gauge-fill" id="di-gauge" style="background:var(--fucsia);"></div>
+            <div class="gauge-fill" id="eur-gauge" style="background:var(--blue);"></div>
         </div>
-        <div class="ref-lines"><span>-1%</span><span>-0.5%</span><span>0</span><span>+0.5%</span><span>+1%</span></div>
-        <div class="di-media">📈 Taxa: <span id="di-media-val">—</span>% ao ano</div>
-        <div class="status" id="di-status">Conectando...</div>
+        <div class="ref-lines"><span>-3%</span><span>-2%</span><span>-1%</span><span>0</span><span>+1%</span><span>+2%</span><span>+3%</span></div>
+        <div class="status" id="eur-status">Conectando...</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title" style="color:var(--fucsia);">BITCOIN <span class="tag">Cripto</span></div>
+        <div class="value-display" id="btc-value">Carregando...</div>
+        <div class="gauge-container">
+            <div class="zero-line"></div>
+            <div class="gauge-fill" id="btc-gauge" style="background:var(--fucsia);"></div>
+        </div>
+        <div class="ref-lines"><span>-5%</span><span>-2.5%</span><span>0</span><span>+2.5%</span><span>+5%</span></div>
+        <div class="status" id="btc-status">Conectando...</div>
     </div>
 </div>
 
@@ -94,32 +93,32 @@
     <div class="zone-block suportes">
         <h3>🟩 SUPORTES — Zonas de Compra</h3>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="sup1-price">—</span><span>Top 1</span></div>
+            <div class="zone-header"><span class="zone-price" id="sup1-price">5.6500</span><span>Top 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:60%;"></div><div class="bar-pf" style="width:40%; background:var(--green);"></div></div>
             <div class="zone-label">🟡 IE: <span id="sup1-ie">60</span>% | 🟢 PF: <span id="sup1-pf">40</span>%</div>
-            <div class="zone-obs" id="sup1-obs">Institucional lidera compras</div>
+            <div class="zone-obs">Institucional lidera compras</div>
         </div>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="sup2-price">—</span><span>Top 2</span></div>
+            <div class="zone-header"><span class="zone-price" id="sup2-price">5.6000</span><span>Top 2</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:35%;"></div><div class="bar-pf" style="width:65%; background:var(--green);"></div></div>
             <div class="zone-label">🟡 IE: <span id="sup2-ie">35</span>% | 🟢 PF: <span id="sup2-pf">65</span>%</div>
-            <div class="zone-obs" id="sup2-obs">Pessoa Física lidera</div>
+            <div class="zone-obs">Pessoa Física lidera</div>
         </div>
     </div>
 
     <div class="zone-block resistencias">
         <h3>🟥 RESISTÊNCIAS — Zonas de Venda</h3>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="res1-price">—</span><span>Top 1</span></div>
+            <div class="zone-header"><span class="zone-price" id="res1-price">5.7500</span><span>Top 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:45%;"></div><div class="bar-pf" style="width:55%; background:var(--red);"></div></div>
             <div class="zone-label">🟡 IE: <span id="res1-ie">45</span>% | 🔴 PF: <span id="res1-pf">55</span>%</div>
-            <div class="zone-obs" id="res1-obs">Pessoa Física lidera vendas</div>
+            <div class="zone-obs">Pessoa Física lidera vendas</div>
         </div>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="res2-price">—</span><span>Top 2</span></div>
+            <div class="zone-header"><span class="zone-price" id="res2-price">5.8000</span><span>Top 2</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:70%;"></div><div class="bar-pf" style="width:30%; background:var(--red);"></div></div>
             <div class="zone-label">🟡 IE: <span id="res2-ie">70</span>% | 🔴 PF: <span id="res2-pf">30</span>%</div>
-            <div class="zone-obs" id="res2-obs">Institucional dominante</div>
+            <div class="zone-obs">Institucional dominante</div>
         </div>
     </div>
 </div>
@@ -136,12 +135,13 @@
 
 <div class="controles">
     <button onclick="atualizarTudo()">🔄 Atualizar Agora</button>
-    <p class="aviso">⚠️ Grátis — HG Finance | Dados em tempo real</p>
+    <p class="aviso">⚠️ Grátis — Alpha Vantage | Limite: 5/min | 500/dia</p>
 </div>
 
 <script>
+const API_KEY = "demo"; // Use sua chave: "3VZ8TUTI59GSW3WZ"
 const LIMITE_MAX = 3.5;
-let precoAbertura = { ibov: null, dolar: null };
+let precoAbertura = { usd: null, eur: null, btc: null };
 let fluxoIE = [], fluxoII = [], fluxoPF = [];
 
 function inicializar() {
@@ -156,7 +156,7 @@ function calcularPosicao(valor){
     return 50 + (p/LIMITE_MAX)*50;
 }
 
-function atualizarGauge(id, valor, cor, nome){
+function atualizarGauge(id, valor, cor, valorTexto){
     const fill = document.getElementById(id + '-gauge');
     const display = document.getElementById(id + '-value');
     const status = document.getElementById(id + '-status');
@@ -165,7 +165,7 @@ function atualizarGauge(id, valor, cor, nome){
     
     fill.style.left = valor >= 0 ? '50%' : (pos - larg) + '%';
     fill.style.width = larg + '%';
-    display.textContent = valor.toFixed(2) + '%';
+    display.textContent = valorTexto;
     display.style.color = cor;
     
     if(valor > 0.1){
@@ -184,21 +184,15 @@ function atualizarGauge(id, valor, cor, nome){
 }
 
 function atualizarZonas() {
-    const precosWin = ['118500', '118200', '119200', '119500'];
-    document.getElementById('sup1-price').textContent = precosWin[0];
-    document.getElementById('sup2-price').textContent = precosWin[1];
-    document.getElementById('res1-price').textContent = precosWin[2];
-    document.getElementById('res2-price').textContent = precosWin[3];
-    
     const ie1 = Math.round(30 + Math.random() * 50);
     document.getElementById('sup1-ie').textContent = ie1;
     document.getElementById('sup1-pf').textContent = 100 - ie1;
-    document.getElementById('sup1-obs').textContent = ie1 > 50 ? 'Institucional lidera compras' : 'Pessoa Física lidera';
-    
-    const ie2 = Math.round(30 + Math.random() * 50);
-    document.getElementById('res1-ie').textContent = ie2;
-    document.getElementById('res1-pf').textContent = 100 - ie2;
-    document.getElementById('res1-obs').textContent = ie2 > 50 ? 'Institucional dominante' : 'Pessoa Física lidera vendas';
+    document.getElementById('sup2-ie').textContent = Math.round(30 + Math.random() * 50);
+    document.getElementById('sup2-pf').textContent = 100 - parseInt(document.getElementById('sup2-ie').textContent);
+    document.getElementById('res1-ie').textContent = Math.round(30 + Math.random() * 50);
+    document.getElementById('res1-pf').textContent = 100 - parseInt(document.getElementById('res1-ie').textContent);
+    document.getElementById('res2-ie').textContent = Math.round(30 + Math.random() * 50);
+    document.getElementById('res2-pf').textContent = 100 - parseInt(document.getElementById('res2-ie').textContent);
 }
 
 function atualizarGrafico() {
@@ -250,45 +244,50 @@ async function atualizarTudo() {
     document.getElementById('last-update').textContent = 'Atualizando...';
     
     try {
-        const url = 'https://api.hgbrasil.com/finance?format=json-cors&key=75d9648c';
-        const resp = await fetch(url);
-        const dados = await resp.json();
+        // === 1. DÓLAR ===
+        const urlUsd = https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=BRL&apikey=${API_KEY};
+        const respUsd = await fetch(urlUsd);
+        const dadosUsd = await respUsd.json();
         
-        if (dados && dados.results) {
-            const cotacoes = dados.results.currencies;
-            
-            if (cotacoes && cotacoes.USD) {
-                const dolar = cotacoes.USD;
-                if (!precoAbertura.dolar) precoAbertura.dolar = dolar.buy;
-                const variacao = ((dolar.buy / precoAbertura.dolar) - 1) * 100;
-                atualizarGauge('wdo', variacao, 'var(--red)', 'DÓLAR');
-                document.getElementById('wdo-value').textContent = 'R$ ' + dolar.buy.toFixed(4);
-            } else {
-                document.getElementById('wdo-status').textContent = 'Dólar indisponível';
-            }
-            
-            if (dados.results.stocks && dados.results.stocks.Ibovespa) {
-                const ibov = dados.results.stocks.Ibovespa;
-                atualizarGauge('win', ibov.variation, 'var(--green)', 'IBOV');
-                document.getElementById('win-value').textContent = ibov.points.toFixed(0);
-            } else {
-                document.getElementById('win-status').textContent = 'Ibovespa indisponível';
-            }
-            
-            if (dados.results.taxes && dados.results.taxes[0]) {
-                const selic = dados.results.taxes[0];
-                document.getElementById('di-value').textContent = selic.rate + '%';
-                document.getElementById('di-media-val').textContent = selic.rate;
-                document.getElementById('di-status').textContent = '✅ SELIC em tempo real';
-                document.getElementById('di-status').style.background = 'rgba(216,27,96,.2)';
-                document.getElementById('di-status').style.color = 'var(--fucsia)';
-            }
+        if (dadosUsd['Realtime Currency Exchange Rate']) {
+            const taxa = parseFloat(dadosUsd['Realtime Currency Exchange Rate']['5. Exchange Rate']);
+            if (!precoAbertura.usd) precoAbertura.usd = taxa;
+            const variacao = ((taxa / precoAbertura.usd) - 1) * 100;
+            atualizarGauge('wdo', variacao, 'var(--red)', 'R$ ' + taxa.toFixed(4));
         } else {
-            document.getElementById('win-status').textContent = 'API sem resposta';
+            document.getElementById('wdo-status').textContent = 'Indisponível — tente depois';
+        }
+
+        // === 2. EURO ===
+        const urlEur = https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=EUR&to_currency=BRL&apikey=${API_KEY};
+        const respEur = await fetch(urlEur);
+        const dadosEur = await respEur.json();
+        
+        if (dadosEur['Realtime Currency Exchange Rate']) {
+            const taxa = parseFloat(dadosEur['Realtime Currency Exchange Rate']['5. Exchange Rate']);
+            if (!precoAbertura.eur) precoAbertura.eur = taxa;
+            const variacao = ((taxa / precoAbertura.eur) - 1) * 100;
+            atualizarGauge('eur', variacao, 'var(--blue)', 'R$ ' + taxa.toFixed(4));
+        } else {
+            document.getElementById('eur-status').textContent = 'Indisponível';
+        }
+
+        // === 3. BITCOIN ===
+        const urlBtc = https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=BTC&to_currency=USD&apikey=${API_KEY};
+        const respBtc = await fetch(urlBtc);
+        const dadosBtc = await respBtc.json();
+        
+        if (dadosBtc['Realtime Currency Exchange Rate']) {
+            const taxa = parseFloat(dadosBtc['Realtime Currency Exchange Rate']['5. Exchange Rate']);
+            if (!precoAbertura.btc) precoAbertura.btc = taxa;
+            const variacao = ((taxa / precoAbertura.btc) - 1) * 100;
+            atualizarGauge('btc', variacao, 'var(--fucsia)', '$ ' + taxa.toFixed(0));
+        } else {
+            document.getElementById('btc-status').textContent = 'Indisponível';
         }
     } catch (erro) {
         console.log('Erro:', erro);
-        document.getElementById('win-status').textContent = 'Erro de conexão';
+        document.getElementById('wdo-status').textContent = 'Erro de conexão';
     }
     
     atualizarZonas();
@@ -299,7 +298,7 @@ async function atualizarTudo() {
 document.addEventListener('DOMContentLoaded', function() {
     inicializar();
     atualizarTudo();
-    setInterval(atualizarTudo, 30000);
+    setInterval(atualizarTudo, 60000);
 });
 </script>
 
