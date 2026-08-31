@@ -140,12 +140,10 @@
 </div>
 
 <script>
-// === CONFIGURAÇÕES ===
 const LIMITE_MAX = 3.5;
 let precoAbertura = { ibov: null, dolar: null };
 let fluxoIE = [], fluxoII = [], fluxoPF = [];
 
-// === INICIALIZAÇÃO ===
 function inicializar() {
     fluxoIE = []; fluxoII = []; fluxoPF = [];
     for(let i=0; i<20; i++){
@@ -153,19 +151,17 @@ function inicializar() {
     }
 }
 
-// === CALCULAR POSIÇÃO NO MEDIDOR ===
 function calcularPosicao(valor){
     const p = Math.max(-LIMITE_MAX, Math.min(LIMITE_MAX, valor));
     return 50 + (p/LIMITE_MAX)*50;
 }
 
-// === ATUALIZAR MEDIDOR ===
 function atualizarGauge(id, valor, cor, nome){
-    const fill = document.getElementById(${id}-gauge);
-    const display = document.getElementById(${id}-value);
-    const status = document.getElementById(${id}-status);
+    const fill = document.getElementById(id + '-gauge');
+    const display = document.getElementById(id + '-value');
+    const status = document.getElementById(id + '-status');
     const pos = calcularPosicao(valor);
-    const larg = Math.abs(pos-50);
+    const larg = Math.abs(pos - 50);
     
     fill.style.left = valor >= 0 ? '50%' : (pos - larg) + '%';
     fill.style.width = larg + '%';
@@ -174,7 +170,7 @@ function atualizarGauge(id, valor, cor, nome){
     
     if(valor > 0.1){
         status.textContent = '🔼 ALTA';
-        status.style.background = cor+'22';
+        status.style.background = cor + '22';
         status.style.color = cor;
     } else if(valor < -0.1){
         status.textContent = '🔽 BAIXA';
@@ -187,7 +183,6 @@ function atualizarGauge(id, valor, cor, nome){
     }
 }
 
-// === ATUALIZAR ZONAS ===
 function atualizarZonas() {
     const precosWin = ['118500', '118200', '119200', '119500'];
     document.getElementById('sup1-price').textContent = precosWin[0];
@@ -198,15 +193,14 @@ function atualizarZonas() {
     const ie1 = Math.round(30 + Math.random() * 50);
     document.getElementById('sup1-ie').textContent = ie1;
     document.getElementById('sup1-pf').textContent = 100 - ie1;
-    document.querySelector('#sup1-obs').textContent = ie1 > 50 ? 'Institucional lidera compras' : 'Pessoa Física lidera';
+    document.getElementById('sup1-obs').textContent = ie1 > 50 ? 'Institucional lidera compras' : 'Pessoa Física lidera';
     
     const ie2 = Math.round(30 + Math.random() * 50);
     document.getElementById('res1-ie').textContent = ie2;
     document.getElementById('res1-pf').textContent = 100 - ie2;
-    document.querySelector('#res1-obs').textContent = ie2 > 50 ? 'Institucional dominante' : 'Pessoa Física lidera vendas';
+    document.getElementById('res1-obs').textContent = ie2 > 50 ? 'Institucional dominante' : 'Pessoa Física lidera vendas';
 }
 
-// === ATUALIZAR GRÁFICO FLUXO ===
 function atualizarGrafico() {
     const canvas = document.getElementById('fluxo-chart');
     const ctx = canvas.getContext('2d');
@@ -215,23 +209,23 @@ function atualizarGrafico() {
     canvas.height = rect.height * window.devicePixelRatio;
     const w = canvas.width, h = canvas.height;
     const padding = {t:20, r:20, b:20, l:40};
-    ctx.clearRect(0,0,w,h);
+    ctx.clearRect(0, 0, w, h);
     
-    fluxoIE.push(fluxoIE[fluxoIE.length-1] + (Math.random()*10-5));
-    fluxoII.push(fluxoII[fluxoII.length-1] + (Math.random()*6-3));
-    fluxoPF.push(fluxoPF[fluxoPF.length-1] + (Math.random()*8-4));
+    fluxoIE.push(fluxoIE[fluxoIE.length - 1] + (Math.random() * 10 - 5));
+    fluxoII.push(fluxoII[fluxoII.length - 1] + (Math.random() * 6 - 3));
+    fluxoPF.push(fluxoPF[fluxoPF.length - 1] + (Math.random() * 8 - 4));
     if(fluxoIE.length > 30){ fluxoIE.shift(); fluxoII.shift(); fluxoPF.shift(); }
     
     const todos = [...fluxoIE, ...fluxoII, ...fluxoPF];
     const max = Math.max(...todos.map(Math.abs)) || 50;
     const gW = w - padding.l - padding.r;
     const gH = h - padding.t - padding.b;
-    const escalaY = (v) => padding.t + gH/2 - (v/max) * (gH/2);
-    const escalaX = (i) => padding.l + (i/(fluxoIE.length-1 || 1)) * gW;
+    const escalaY = function(v) { return padding.t + gH/2 - (v/max) * (gH/2); };
+    const escalaX = function(i) { return padding.l + (i/(fluxoIE.length - 1 || 1)) * gW; };
     
     ctx.beginPath();
     ctx.moveTo(padding.l, escalaY(0));
-    ctx.lineTo(w-padding.r, escalaY(0));
+    ctx.lineTo(w - padding.r, escalaY(0));
     ctx.strokeStyle = '#444';
     ctx.lineWidth = 1;
     ctx.stroke();
@@ -241,7 +235,7 @@ function atualizarGrafico() {
         for(let i=0; i<dados.length; i++){
             const x = escalaX(i);
             const y = escalaY(dados[i]);
-            i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
         }
         ctx.strokeStyle = cor;
         ctx.lineWidth = 2.5;
@@ -252,12 +246,10 @@ function atualizarGrafico() {
     desenhaLinha(fluxoPF, '#00c853');
 }
 
-// === FUNÇÃO PRINCIPAL — SEM ERROS DE SINTAXE ===
 async function atualizarTudo() {
     document.getElementById('last-update').textContent = 'Atualizando...';
     
     try {
-        // === BUSCA DADOS — HG FINANCE ===
         const url = 'https://api.hgbrasil.com/finance?format=json-cors&key=75d9648c';
         const resp = await fetch(url);
         const dados = await resp.json();
@@ -265,7 +257,6 @@ async function atualizarTudo() {
         if (dados && dados.results) {
             const cotacoes = dados.results.currencies;
             
-            // === 1. DÓLAR ===
             if (cotacoes && cotacoes.USD) {
                 const dolar = cotacoes.USD;
                 if (!precoAbertura.dolar) precoAbertura.dolar = dolar.buy;
@@ -276,7 +267,6 @@ async function atualizarTudo() {
                 document.getElementById('wdo-status').textContent = 'Dólar indisponível';
             }
             
-            // === 2. IBOVESPA ===
             if (dados.results.stocks && dados.results.stocks.Ibovespa) {
                 const ibov = dados.results.stocks.Ibovespa;
                 atualizarGauge('win', ibov.variation, 'var(--green)', 'IBOV');
@@ -285,7 +275,6 @@ async function atualizarTudo() {
                 document.getElementById('win-status').textContent = 'Ibovespa indisponível';
             }
             
-            // === 3. SELIC ===
             if (dados.results.taxes && dados.results.taxes[0]) {
                 const selic = dados.results.taxes[0];
                 document.getElementById('di-value').textContent = selic.rate + '%';
@@ -307,7 +296,6 @@ async function atualizarTudo() {
     document.getElementById('last-update').textContent = new Date().toLocaleTimeString('pt-BR');
 }
 
-// === INICIALIZAÇÃO ===
 document.addEventListener('DOMContentLoaded', function() {
     inicializar();
     atualizarTudo();
