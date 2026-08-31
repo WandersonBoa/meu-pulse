@@ -3,130 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Pulse — DADOS REAIS</title>
+    <title>Nosso Pulse — WDO + WIN</title>
     <style>
         *{margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif;}
-        :root{--bg:#0f1115; --card:#1a1d23; --border:#2a2d34; --green:#00c853; --red:#f44336; --fucsia:#d81b60; --yellow:#ffc107; --blue:#2196f3; --text:#e0e0e0; --muted:#888;}
-        body{background:var(--bg); color:var(--text); padding:15px; max-width:1400px; margin:0 auto;}
+        :root{--bg:#0f1115; --card:#1a1d23; --border:#2a2d34; --green:#00c853; --red:#f44336; --yellow:#ffc107; --text:#e0e0e0; --muted:#888;}
+        body{background:var(--bg); color:var(--text); padding:15px; max-width:1200px; margin:0 auto;}
         h1{text-align:center; margin-bottom:15px; color:var(--yellow); font-size:1.5rem;}
-        .atualizacao{text-align:center; color:var(--muted); font-size:.85rem; margin-bottom:20px;}
-        .grid-top{display:grid; grid-template-columns:1fr; gap:20px; margin-bottom:25px;}
-        @media(min-width:900px){.grid-top{grid-template-columns:1fr 1fr 1fr;}}
-        .card{background:var(--card); border-radius:12px; padding:20px; box-shadow:0 4px 15px rgba(0,0,0,.3);}
-        .card-title{font-size:1.1rem; font-weight:bold; margin-bottom:15px; display:flex; justify-content:space-between;}
-        .tag{font-size:.75rem; padding:3px 8px; border-radius:4px; background:var(--border);}
-        .value-display{font-size:2.2rem; font-weight:bold; text-align:center; margin:10px 0;}
-        .gauge-container{position:relative; height:36px; background:var(--border); border-radius:18px; margin:15px 0; overflow:hidden;}
-        .gauge-fill{height:100%; border-radius:18px; transition:all .4s ease; width:0; position:absolute; left:50%;}
+        .atualizacao{text-align:center; color:var(--muted); font-size:.85rem; margin-bottom:25px;}
+        .grid-top{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:30px;}
+        @media(max-width:700px){.grid-top{grid-template-columns:1fr;}}
+        .card{background:var(--card); border-radius:12px; padding:25px; box-shadow:0 4px 15px rgba(0,0,0,.3);}
+        .card-title{font-size:1.2rem; font-weight:bold; margin-bottom:20px; display:flex; justify-content:space-between;}
+        .tag{font-size:.75rem; padding:4px 10px; border-radius:4px; background:var(--border);}
+        .value-display{font-size:2.5rem; font-weight:bold; text-align:center; margin:15px 0;}
+        .gauge-container{position:relative; height:40px; background:var(--border); border-radius:20px; margin:20px 0; overflow:hidden;}
+        .gauge-fill{height:100%; border-radius:20px; transition:all .4s ease; width:0; position:absolute; left:50%;}
         .zero-line{position:absolute; top:0; bottom:0; width:2px; background:#fff; left:50%; transform:translateX(-50%); z-index:3;}
-        .ref-lines{display:flex; justify-content:space-between; font-size:.7rem; color:var(--muted); margin-top:5px; padding:0 5px;}
-        .status{margin-top:10px; padding:8px; border-radius:6px; text-align:center; font-weight:bold; font-size:.9rem;}
-        .zones-container{display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:25px;}
-        .zone-block{background:var(--card); border-radius:12px; padding:18px;}
-        .zone-block h3{font-size:1rem; margin-bottom:15px; padding-bottom:8px; border-bottom:1px solid var(--border);}
+        .ref-lines{display:flex; justify-content:space-between; font-size:.75rem; color:var(--muted); margin-top:8px; padding:0 5px;}
+        .status{margin-top:15px; padding:10px; border-radius:6px; text-align:center; font-weight:bold; font-size:1rem;}
+        .zones-container{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:30px;}
+        @media(max-width:700px){.zones-container{grid-template-columns:1fr;}}
+        .zone-block{background:var(--card); border-radius:12px; padding:20px;}
+        .zone-block h3{font-size:1.1rem; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--border);}
         .suportes h3{color:var(--green);} .resistencias h3{color:var(--red);}
         .zone-item{margin-bottom:15px;}
-        .zone-header{display:flex; justify-content:space-between; font-size:.9rem; margin-bottom:5px;}
-        .zone-price{font-weight:bold; font-size:1rem;}
+        .zone-header{display:flex; justify-content:space-between; font-size:.95rem; margin-bottom:5px;}
+        .zone-price{font-weight:bold; font-size:1.1rem;}
         .bar-container{height:10px; background:var(--border); border-radius:5px; overflow:hidden; display:flex; margin:5px 0;}
         .bar-ie{height:100%; background:var(--yellow); transition:width .5s ease;}
         .bar-pf{height:100%; transition:width .5s ease;}
-        .zone-label{font-size:.75rem; color:var(--muted); margin-top:4px;}
-        .zone-obs{font-size:.8rem; margin-top:8px; padding:6px 10px; border-radius:6px;}
+        .zone-label{font-size:.8rem; color:var(--muted); margin-top:5px;}
+        .zone-obs{font-size:.85rem; margin-top:8px; padding:8px 12px; border-radius:6px;}
         .suportes .zone-obs{background:rgba(0,200,83,.1); color:var(--green);}
         .resistencias .zone-obs{background:rgba(244,67,54,.1); color:var(--red);}
-        .fluxo-card{background:var(--card); border-radius:12px; padding:20px; margin-bottom:20px;}
-        .fluxo-legenda{display:flex; gap:20px; justify-content:center; margin-bottom:15px; flex-wrap:wrap;}
-        .legenda-item{display:flex; align-items:center; gap:6px; font-size:.9rem;}
-        .legenda-dot{width:12px; height:12px; border-radius:50%; display:inline-block;}
-        .grafico-wrapper{position:relative; height:220px; background:var(--bg); border-radius:8px; overflow:hidden;}
+        .fluxo-card{background:var(--card); border-radius:12px; padding:25px; margin-bottom:25px;}
+        .fluxo-card h3{text-align:center; margin-bottom:15px; color:var(--yellow);}
+        .grafico-wrapper{position:relative; height:200px; background:var(--bg); border-radius:8px; overflow:hidden;}
         canvas{width:100%; height:100%; display:block;}
         .controles{text-align:center; margin-top:20px;}
-        button{background:var(--border); color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-size:.95rem; transition:all .2s;}
+        button{background:var(--border); color:#fff; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-size:1rem; transition:all .2s;}
         button:hover{background:#3a3d44;}
     </style>
 </head>
 <body>
 
-<h1>📊 NOSSO PULSE — DADOS REAIS</h1>
-<div class="atualizacao">Última atualização: <span id="last-update">—</span> | ⏱️ Atualização: 60s | 🔗 Fonte: ExchangeRate-API</div>
+<h1>📊 NOSSO PULSE — DÓLAR WDO + ÍNDICE WIN</h1>
+<div class="atualizacao">Última atualização: <span id="last-update">—</span> | ⏱️ Atualização: 30s | Foco: WDOFUT + WINFUT</div>
 
 <div class="grid-top">
+    <!-- IBOVESPA / WIN -->
     <div class="card">
-        <div class="card-title" style="color:var(--red);">DÓLAR USD/BRL <span class="tag">Câmbio</span></div>
-        <div class="value-display" id="usd-value">Carregando...</div>
+        <div class="card-title" style="color:var(--green);">IBOVESPA <span class="tag">WINFUT</span></div>
+        <div class="value-display" id="win-value">Carregando...</div>
         <div class="gauge-container">
             <div class="zero-line"></div>
-            <div class="gauge-fill" id="usd-gauge" style="background:var(--red);"></div>
+            <div class="gauge-fill" id="win-gauge" style="background:var(--green);"></div>
         </div>
         <div class="ref-lines"><span>-3%</span><span>-2%</span><span>-1%</span><span>0</span><span>+1%</span><span>+2%</span><span>+3%</span></div>
-        <div class="status" id="usd-status">Conectando...</div>
+        <div class="status" id="win-status">Conectando...</div>
     </div>
 
+    <!-- DÓLAR / WDO -->
     <div class="card">
-        <div class="card-title" style="color:var(--blue);">EURO/BRL <span class="tag">Câmbio</span></div>
-        <div class="value-display" id="eur-value">Carregando...</div>
+        <div class="card-title" style="color:var(--red);">DÓLAR <span class="tag">WDOFUT</span></div>
+        <div class="value-display" id="wdo-value">Carregando...</div>
         <div class="gauge-container">
             <div class="zero-line"></div>
-            <div class="gauge-fill" id="eur-gauge" style="background:var(--blue);"></div>
+            <div class="gauge-fill" id="wdo-gauge" style="background:var(--red);"></div>
         </div>
         <div class="ref-lines"><span>-3%</span><span>-2%</span><span>-1%</span><span>0</span><span>+1%</span><span>+2%</span><span>+3%</span></div>
-        <div class="status" id="eur-status">Conectando...</div>
-    </div>
-
-    <div class="card">
-        <div class="card-title" style="color:var(--fucsia);">PESO ARS/BRL <span class="tag">Câmbio</span></div>
-        <div class="value-display" id="ars-value">Carregando...</div>
-        <div class="gauge-container">
-            <div class="zero-line"></div>
-            <div class="gauge-fill" id="ars-gauge" style="background:var(--fucsia);"></div>
-        </div>
-        <div class="ref-lines"><span>-5%</span><span>-2.5%</span><span>0</span><span>+2.5%</span><span>+5%</span></div>
-        <div class="status" id="ars-status">Conectando...</div>
+        <div class="status" id="wdo-status">Conectando...</div>
     </div>
 </div>
 
+<!-- ZONAS DE SUPORTE E RESISTÊNCIA -->
 <div class="zones-container">
     <div class="zone-block suportes">
         <h3>🟩 SUPORTES — Zonas de Compra</h3>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price">5.6500</span><span>Top 1</span></div>
+            <div class="zone-header"><span class="zone-price" id="sup1-price">—</span><span>WDO Suporte 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:60%;"></div><div class="bar-pf" style="width:40%; background:var(--green);"></div></div>
-            <div class="zone-label">🟡 IE: 60% | 🟢 PF: 40%</div>
-            <div class="zone-obs">Institucional lidera compras</div>
+            <div class="zone-label">Institucional: 60% | PF: 40%</div>
+            <div class="zone-obs">Institucional comprando</div>
         </div>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price">5.6000</span><span>Top 2</span></div>
+            <div class="zone-header"><span class="zone-price" id="sup2-price">—</span><span>WIN Suporte 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:35%;"></div><div class="bar-pf" style="width:65%; background:var(--green);"></div></div>
-            <div class="zone-label">🟡 IE: 35% | 🟢 PF: 65%</div>
-            <div class="zone-obs">Pessoa Física lidera</div>
+            <div class="zone-label">Institucional: 35% | PF: 65%</div>
+            <div class="zone-obs">PF lidera compras</div>
         </div>
     </div>
 
     <div class="zone-block resistencias">
         <h3>🟥 RESISTÊNCIAS — Zonas de Venda</h3>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price">5.7500</span><span>Top 1</span></div>
+            <div class="zone-header"><span class="zone-price" id="res1-price">—</span><span>WDO Resistência 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:45%;"></div><div class="bar-pf" style="width:55%; background:var(--red);"></div></div>
-            <div class="zone-label">🟡 IE: 45% | 🔴 PF: 55%</div>
-            <div class="zone-obs">Pessoa Física lidera vendas</div>
+            <div class="zone-label">Institucional: 45% | PF: 55%</div>
+            <div class="zone-obs">PF vendendo</div>
         </div>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price">5.8000</span><span>Top 2</span></div>
+            <div class="zone-header"><span class="zone-price" id="res2-price">—</span><span>WIN Resistência 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:70%;"></div><div class="bar-pf" style="width:30%; background:var(--red);"></div></div>
-            <div class="zone-label">🟡 IE: 70% | 🔴 PF: 30%</div>
-            <div class="zone-obs">Institucional dominante</div>
+            <div class="zone-label">Institucional: 70% | PF: 30%</div>
+            <div class="zone-obs">Institucional vendendo forte</div>
         </div>
     </div>
 </div>
 
+<!-- GRÁFICO DE FLUXO -->
 <div class="fluxo-card">
-    <h3 style="text-align:center; margin-bottom:10px; color:var(--yellow);">📈 PERFIL INTRADAY — Fluxo Acumulado</h3>
-    <div class="fluxo-legenda">
-        <div class="legenda-item"><span class="legenda-dot" style="background:var(--yellow);"></span> IE — Institucional</div>
-        <div class="legenda-item"><span class="legenda-dot" style="background:var(--blue);"></span> II — Intermediários</div>
-        <div class="legenda-item"><span class="legenda-dot" style="background:var(--green);"></span> PF — Pessoa Física</div>
-    </div>
+    <h3>📈 FLUXO — WDO x WIN</h3>
     <div class="grafico-wrapper"><canvas id="fluxo-chart"></canvas></div>
 </div>
 
@@ -135,23 +122,24 @@
 </div>
 
 <script>
+// === CONFIGURAÇÕES — SOMENTE WDO E WIN ===
 var LIMITE_MAX = 3.5;
-var precoAbertura = { usd: null, eur: null, ars: null };
-var fluxoIE = [], fluxoII = [], fluxoPF = [];
+var precoAbertura = { wdo: null, win: null };
+var fluxoWDO = [], fluxoWIN = [];
 
 function inicializar() {
-    fluxoIE = []; fluxoII = []; fluxoPF = [];
+    fluxoWDO = []; fluxoWIN = [];
     for(var i=0; i<20; i++){
-        fluxoIE.push(0); fluxoII.push(0); fluxoPF.push(0);
+        fluxoWDO.push(0); fluxoWIN.push(0);
     }
 }
 
 function calcularPosicao(valor){
     var p = Math.max(-LIMITE_MAX, Math.min(LIMITE_MAX, valor));
-    return 50 + (p/LIMITE_MAX)*50;
+    return 50 + (p / LIMITE_MAX) * 50;
 }
 
-function atualizarGauge(id, valor, cor, valorTexto){
+function atualizarGauge(id, valor, cor, precoTexto){
     var fill = document.getElementById(id + '-gauge');
     var display = document.getElementById(id + '-value');
     var status = document.getElementById(id + '-status');
@@ -160,22 +148,29 @@ function atualizarGauge(id, valor, cor, valorTexto){
     
     fill.style.left = valor >= 0 ? '50%' : (pos - larg) + '%';
     fill.style.width = larg + '%';
-    display.textContent = valorTexto;
+    display.textContent = precoTexto + '  (' + valor.toFixed(2) + '%)';
     display.style.color = cor;
     
     if(valor > 0.1){
-        status.textContent = '🔼 ALTA';
+        status.textContent = '🔼 ALTA — Compra';
         status.style.background = cor + '22';
         status.style.color = cor;
     } else if(valor < -0.1){
-        status.textContent = '🔽 BAIXA';
+        status.textContent = '🔽 BAIXA — Venda';
         status.style.background = 'rgba(244,67,54,.2)';
         status.style.color = 'var(--red)';
     } else {
-        status.textContent = '➖ ESTÁVEL';
+        status.textContent = '➖ Lateral — Espera';
         status.style.background = 'rgba(255,255,255,.1)';
         status.style.color = '#fff';
     }
+}
+
+function atualizarZonas(wdoPreco, winPreco) {
+    document.getElementById('sup1-price').textContent = (wdoPreco * 0.995).toFixed(4);
+    document.getElementById('sup2-price').textContent = Math.round(winPreco * 0.995);
+    document.getElementById('res1-price').textContent = (wdoPreco * 1.005).toFixed(4);
+    document.getElementById('res2-price').textContent = Math.round(winPreco * 1.005);
 }
 
 function atualizarGrafico() {
@@ -188,18 +183,18 @@ function atualizarGrafico() {
     var padding = {t:20, r:20, b:20, l:40};
     ctx.clearRect(0, 0, w, h);
     
-    fluxoIE.push(fluxoIE[fluxoIE.length - 1] + (Math.random() * 10 - 5));
-    fluxoII.push(fluxoII[fluxoII.length - 1] + (Math.random() * 6 - 3));
-    fluxoPF.push(fluxoPF[fluxoPF.length - 1] + (Math.random() * 8 - 4));
-    if(fluxoIE.length > 30){ fluxoIE.shift(); fluxoII.shift(); fluxoPF.shift(); }
+    // Atualiza linhas
+    fluxoWDO.push(fluxoWDO[fluxoWDO.length - 1] + (Math.random() * 4 - 2));
+    fluxoWIN.push(fluxoWIN[fluxoWIN.length - 1] + (Math.random() * 5 - 2.5));
+    if(fluxoWDO.length > 30){ fluxoWDO.shift(); fluxoWIN.shift(); }
     
-    var max = 50;
+    var max = 30;
     var gW = w - padding.l - padding.r;
     var gH = h - padding.t - padding.b;
-    
     function escalaY(v) { return padding.t + gH/2 - (v/max) * (gH/2); }
-    function escalaX(i) { return padding.l + (i/(fluxoIE.length - 1 || 1)) * gW; }
+    function escalaX(i) { return padding.l + (i/(fluxoWDO.length - 1 || 1)) * gW; }
     
+    // Linha zero
     ctx.beginPath();
     ctx.moveTo(padding.l, escalaY(0));
     ctx.lineTo(w - padding.r, escalaY(0));
@@ -207,62 +202,72 @@ function atualizarGrafico() {
     ctx.lineWidth = 1;
     ctx.stroke();
     
-    function desenhaLinha(dados, cor){
-        ctx.beginPath();
-        for(var i=0; i<dados.length; i++){
-            var x = escalaX(i);
-            var y = escalaY(dados[i]);
-            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        }
-        ctx.strokeStyle = cor;
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
+    // Desenha WDO (vermelho)
+    ctx.beginPath();
+    for(var i=0; i<fluxoWDO.length; i++){
+        var x = escalaX(i);
+        var y = escalaY(fluxoWDO[i]);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
-    desenhaLinha(fluxoIE, '#ffc107');
-    desenhaLinha(fluxoII, '#2196f3');
-    desenhaLinha(fluxoPF, '#00c853');
+    ctx.strokeStyle = '#f44336';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    
+    // Desenha WIN (verde)
+    ctx.beginPath();
+    for(var i=0; i<fluxoWIN.length; i++){
+        var x = escalaX(i);
+        var y = escalaY(fluxoWIN[i]);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = '#00c853';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
 }
 
 async function atualizarTudo() {
     document.getElementById('last-update').textContent = 'Atualizando...';
     
     try {
-        // API que FUNCIONA no navegador — sem bloqueio CORS!
-        var url = 'https://v6.exchangerate-api.com/v6/94d996728082d5d7d39788a5/latest/USD';
+        // === BUSCA DADOS REAIS ===
+        var url = 'https://api.hgbrasil.com/finance?format=json-cors&key=75d9648c';
         var resp = await fetch(url);
         var dados = await resp.json();
         
-        if (dados && dados.conversion_rates) {
-            var r = dados.conversion_rates;
+        if (dados && dados.results) {
+            var cotacoes = dados.results.currencies;
+            var indices = dados.results.stocks;
             
-            // DÓLAR
-            if (r.BRL) {
-                if (!precoAbertura.usd) precoAbertura.usd = r.BRL;
-                var varUsd = ((r.BRL / precoAbertura.usd) - 1) * 100;
-                atualizarGauge('usd', varUsd, 'var(--red)', 'R$ ' + r.BRL.toFixed(4));
+            // === DÓLAR WDO ===
+            if (cotacoes && cotacoes.USD) {
+                var dolar = cotacoes.USD;
+                if (!precoAbertura.wdo) precoAbertura.wdo = dolar.buy;
+                var variacaoWDO = ((dolar.buy / precoAbertura.wdo) - 1) * 100;
+                atualizarGauge('wdo', variacaoWDO, 'var(--red)', 'R$ ' + dolar.buy.toFixed(4));
+                var wdoPreco = dolar.buy;
             }
             
-            // EURO
-            if (r.EUR && r.BRL) {
-                var eurBrl = r.BRL / r.EUR;
-                if (!precoAbertura.eur) precoAbertura.eur = eurBrl;
-                var varEur = ((eurBrl / precoAbertura.eur) - 1) * 100;
-                atualizarGauge('eur', varEur, 'var(--blue)', 'R$ ' + eurBrl.toFixed(4));
+            // === IBOVESPA WIN ===
+            if (indices && indices.Ibovespa) {
+                var ibov = indices.Ibovespa;
+                if (!precoAbertura.win) precoAbertura.win = ibov.points;
+                var variacaoWIN = ibov.variation;
+                atualizarGauge('win', variacaoWIN, 'var(--green)', Math.round(ibov.points).toLocaleString('pt-BR'));
+                var winPreco = ibov.points;
             }
             
-            // PESO ARGENTINO
-            if (r.ARS && r.BRL) {
-                var arsBrl = r.BRL / r.ARS;
-                if (!precoAbertura.ars) precoAbertura.ars = arsBrl;
-                var varArs = ((arsBrl / precoAbertura.ars) - 1) * 100;
-                atualizarGauge('ars', varArs, 'var(--fucsia)', 'R$ ' + arsBrl.toFixed(4));
+            // Atualiza zonas com os preços reais
+            if (typeof wdoPreco !== 'undefined' && typeof winPreco !== 'undefined') {
+                atualizarZonas(wdoPreco, winPreco);
             }
         } else {
-            document.getElementById('usd-status').textContent = 'API sem resposta';
+            document.getElementById('wdo-status').textContent = 'API sem resposta';
+            document.getElementById('win-status').textContent = 'API sem resposta';
         }
     } catch (erro) {
         console.log('Erro:', erro);
-        document.getElementById('usd-status').textContent = 'Erro de conexão';
+        document.getElementById('wdo-status').textContent = 'Erro — tentando novamente';
+        document.getElementById('win-status').textContent = 'Erro — tentando novamente';
     }
     
     atualizarGrafico();
@@ -272,7 +277,7 @@ async function atualizarTudo() {
 document.addEventListener('DOMContentLoaded', function() {
     inicializar();
     atualizarTudo();
-    setInterval(atualizarTudo, 60000);
+    setInterval(atualizarTudo, 30000);
 });
 </script>
 
