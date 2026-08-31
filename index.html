@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Pulse — DADOS REAIS B3</title>
+    <title>Nosso Pulse — DADOS REAIS</title>
     <style>
         *{margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif;}
         :root{--bg:#0f1115; --card:#1a1d23; --border:#2a2d34; --green:#00c853; --red:#f44336; --fucsia:#d81b60; --yellow:#ffc107; --blue:#2196f3; --text:#e0e0e0; --muted:#888;}
@@ -20,8 +20,6 @@
         .gauge-fill{height:100%; border-radius:18px; transition:all .4s ease; width:0; position:absolute; left:50%;}
         .zero-line{position:absolute; top:0; bottom:0; width:2px; background:#fff; left:50%; transform:translateX(-50%); z-index:3;}
         .ref-lines{display:flex; justify-content:space-between; font-size:.7rem; color:var(--muted); margin-top:5px; padding:0 5px;}
-        .di-media{margin-top:15px; padding-top:12px; border-top:1px solid var(--border); font-size:.9rem;}
-        .di-media span{color:var(--fucsia); font-weight:bold;}
         .status{margin-top:10px; padding:8px; border-radius:6px; text-align:center; font-weight:bold; font-size:.9rem;}
         .zones-container{display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:25px;}
         .zone-block{background:var(--card); border-radius:12px; padding:18px;}
@@ -46,24 +44,23 @@
         .controles{text-align:center; margin-top:20px;}
         button{background:var(--border); color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-size:.95rem; transition:all .2s;}
         button:hover{background:#3a3d44;}
-        .aviso{text-align:center; color:var(--yellow); font-size:.8rem; margin-top:10px;}
     </style>
 </head>
 <body>
 
-<h1>📊 NOSSO PULSE — DADOS REAIS B3</h1>
-<div class="atualizacao">Última atualização: <span id="last-update">—</span> | ⏱️ Atualização: 60s | 🔗 Fonte: Alpha Vantage / ExchangeRate</div>
+<h1>📊 NOSSO PULSE — DADOS REAIS</h1>
+<div class="atualizacao">Última atualização: <span id="last-update">—</span> | ⏱️ Atualização: 60s | 🔗 Fonte: ExchangeRate-API</div>
 
 <div class="grid-top">
     <div class="card">
-        <div class="card-title" style="color:var(--green);">DÓLAR USD/BRL <span class="tag">Câmbio</span></div>
-        <div class="value-display" id="wdo-value">Carregando...</div>
+        <div class="card-title" style="color:var(--red);">DÓLAR USD/BRL <span class="tag">Câmbio</span></div>
+        <div class="value-display" id="usd-value">Carregando...</div>
         <div class="gauge-container">
             <div class="zero-line"></div>
-            <div class="gauge-fill" id="wdo-gauge" style="background:var(--red);"></div>
+            <div class="gauge-fill" id="usd-gauge" style="background:var(--red);"></div>
         </div>
         <div class="ref-lines"><span>-3%</span><span>-2%</span><span>-1%</span><span>0</span><span>+1%</span><span>+2%</span><span>+3%</span></div>
-        <div class="status" id="wdo-status">Conectando...</div>
+        <div class="status" id="usd-status">Conectando...</div>
     </div>
 
     <div class="card">
@@ -78,14 +75,14 @@
     </div>
 
     <div class="card">
-        <div class="card-title" style="color:var(--fucsia);">BITCOIN <span class="tag">Cripto</span></div>
-        <div class="value-display" id="btc-value">Carregando...</div>
+        <div class="card-title" style="color:var(--fucsia);">PESO ARS/BRL <span class="tag">Câmbio</span></div>
+        <div class="value-display" id="ars-value">Carregando...</div>
         <div class="gauge-container">
             <div class="zero-line"></div>
-            <div class="gauge-fill" id="btc-gauge" style="background:var(--fucsia);"></div>
+            <div class="gauge-fill" id="ars-gauge" style="background:var(--fucsia);"></div>
         </div>
         <div class="ref-lines"><span>-5%</span><span>-2.5%</span><span>0</span><span>+2.5%</span><span>+5%</span></div>
-        <div class="status" id="btc-status">Conectando...</div>
+        <div class="status" id="ars-status">Conectando...</div>
     </div>
 </div>
 
@@ -93,15 +90,15 @@
     <div class="zone-block suportes">
         <h3>🟩 SUPORTES — Zonas de Compra</h3>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="sup1-price">5.6500</span><span>Top 1</span></div>
+            <div class="zone-header"><span class="zone-price">5.6500</span><span>Top 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:60%;"></div><div class="bar-pf" style="width:40%; background:var(--green);"></div></div>
-            <div class="zone-label">🟡 IE: <span id="sup1-ie">60</span>% | 🟢 PF: <span id="sup1-pf">40</span>%</div>
+            <div class="zone-label">🟡 IE: 60% | 🟢 PF: 40%</div>
             <div class="zone-obs">Institucional lidera compras</div>
         </div>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="sup2-price">5.6000</span><span>Top 2</span></div>
+            <div class="zone-header"><span class="zone-price">5.6000</span><span>Top 2</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:35%;"></div><div class="bar-pf" style="width:65%; background:var(--green);"></div></div>
-            <div class="zone-label">🟡 IE: <span id="sup2-ie">35</span>% | 🟢 PF: <span id="sup2-pf">65</span>%</div>
+            <div class="zone-label">🟡 IE: 35% | 🟢 PF: 65%</div>
             <div class="zone-obs">Pessoa Física lidera</div>
         </div>
     </div>
@@ -109,15 +106,15 @@
     <div class="zone-block resistencias">
         <h3>🟥 RESISTÊNCIAS — Zonas de Venda</h3>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="res1-price">5.7500</span><span>Top 1</span></div>
+            <div class="zone-header"><span class="zone-price">5.7500</span><span>Top 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:45%;"></div><div class="bar-pf" style="width:55%; background:var(--red);"></div></div>
-            <div class="zone-label">🟡 IE: <span id="res1-ie">45</span>% | 🔴 PF: <span id="res1-pf">55</span>%</div>
+            <div class="zone-label">🟡 IE: 45% | 🔴 PF: 55%</div>
             <div class="zone-obs">Pessoa Física lidera vendas</div>
         </div>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="res2-price">5.8000</span><span>Top 2</span></div>
+            <div class="zone-header"><span class="zone-price">5.8000</span><span>Top 2</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:70%;"></div><div class="bar-pf" style="width:30%; background:var(--red);"></div></div>
-            <div class="zone-label">🟡 IE: <span id="res2-ie">70</span>% | 🔴 PF: <span id="res2-pf">30</span>%</div>
+            <div class="zone-label">🟡 IE: 70% | 🔴 PF: 30%</div>
             <div class="zone-obs">Institucional dominante</div>
         </div>
     </div>
@@ -135,33 +132,31 @@
 
 <div class="controles">
     <button onclick="atualizarTudo()">🔄 Atualizar Agora</button>
-    <p class="aviso">⚠️ Grátis — Alpha Vantage | Limite: 5/min | 500/dia</p>
 </div>
 
 <script>
-const API_KEY = "demo"; // Use sua chave: "3VZ8TUTI59GSW3WZ"
-const LIMITE_MAX = 3.5;
-let precoAbertura = { usd: null, eur: null, btc: null };
-let fluxoIE = [], fluxoII = [], fluxoPF = [];
+var LIMITE_MAX = 3.5;
+var precoAbertura = { usd: null, eur: null, ars: null };
+var fluxoIE = [], fluxoII = [], fluxoPF = [];
 
 function inicializar() {
     fluxoIE = []; fluxoII = []; fluxoPF = [];
-    for(let i=0; i<20; i++){
+    for(var i=0; i<20; i++){
         fluxoIE.push(0); fluxoII.push(0); fluxoPF.push(0);
     }
 }
 
 function calcularPosicao(valor){
-    const p = Math.max(-LIMITE_MAX, Math.min(LIMITE_MAX, valor));
+    var p = Math.max(-LIMITE_MAX, Math.min(LIMITE_MAX, valor));
     return 50 + (p/LIMITE_MAX)*50;
 }
 
 function atualizarGauge(id, valor, cor, valorTexto){
-    const fill = document.getElementById(id + '-gauge');
-    const display = document.getElementById(id + '-value');
-    const status = document.getElementById(id + '-status');
-    const pos = calcularPosicao(valor);
-    const larg = Math.abs(pos - 50);
+    var fill = document.getElementById(id + '-gauge');
+    var display = document.getElementById(id + '-value');
+    var status = document.getElementById(id + '-status');
+    var pos = calcularPosicao(valor);
+    var larg = Math.abs(pos - 50);
     
     fill.style.left = valor >= 0 ? '50%' : (pos - larg) + '%';
     fill.style.width = larg + '%';
@@ -183,26 +178,14 @@ function atualizarGauge(id, valor, cor, valorTexto){
     }
 }
 
-function atualizarZonas() {
-    const ie1 = Math.round(30 + Math.random() * 50);
-    document.getElementById('sup1-ie').textContent = ie1;
-    document.getElementById('sup1-pf').textContent = 100 - ie1;
-    document.getElementById('sup2-ie').textContent = Math.round(30 + Math.random() * 50);
-    document.getElementById('sup2-pf').textContent = 100 - parseInt(document.getElementById('sup2-ie').textContent);
-    document.getElementById('res1-ie').textContent = Math.round(30 + Math.random() * 50);
-    document.getElementById('res1-pf').textContent = 100 - parseInt(document.getElementById('res1-ie').textContent);
-    document.getElementById('res2-ie').textContent = Math.round(30 + Math.random() * 50);
-    document.getElementById('res2-pf').textContent = 100 - parseInt(document.getElementById('res2-ie').textContent);
-}
-
 function atualizarGrafico() {
-    const canvas = document.getElementById('fluxo-chart');
-    const ctx = canvas.getContext('2d');
-    const rect = canvas.getBoundingClientRect();
+    var canvas = document.getElementById('fluxo-chart');
+    var ctx = canvas.getContext('2d');
+    var rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * window.devicePixelRatio;
     canvas.height = rect.height * window.devicePixelRatio;
-    const w = canvas.width, h = canvas.height;
-    const padding = {t:20, r:20, b:20, l:40};
+    var w = canvas.width, h = canvas.height;
+    var padding = {t:20, r:20, b:20, l:40};
     ctx.clearRect(0, 0, w, h);
     
     fluxoIE.push(fluxoIE[fluxoIE.length - 1] + (Math.random() * 10 - 5));
@@ -210,12 +193,12 @@ function atualizarGrafico() {
     fluxoPF.push(fluxoPF[fluxoPF.length - 1] + (Math.random() * 8 - 4));
     if(fluxoIE.length > 30){ fluxoIE.shift(); fluxoII.shift(); fluxoPF.shift(); }
     
-    const todos = [...fluxoIE, ...fluxoII, ...fluxoPF];
-    const max = Math.max(...todos.map(Math.abs)) || 50;
-    const gW = w - padding.l - padding.r;
-    const gH = h - padding.t - padding.b;
-    const escalaY = function(v) { return padding.t + gH/2 - (v/max) * (gH/2); };
-    const escalaX = function(i) { return padding.l + (i/(fluxoIE.length - 1 || 1)) * gW; };
+    var max = 50;
+    var gW = w - padding.l - padding.r;
+    var gH = h - padding.t - padding.b;
+    
+    function escalaY(v) { return padding.t + gH/2 - (v/max) * (gH/2); }
+    function escalaX(i) { return padding.l + (i/(fluxoIE.length - 1 || 1)) * gW; }
     
     ctx.beginPath();
     ctx.moveTo(padding.l, escalaY(0));
@@ -226,9 +209,9 @@ function atualizarGrafico() {
     
     function desenhaLinha(dados, cor){
         ctx.beginPath();
-        for(let i=0; i<dados.length; i++){
-            const x = escalaX(i);
-            const y = escalaY(dados[i]);
+        for(var i=0; i<dados.length; i++){
+            var x = escalaX(i);
+            var y = escalaY(dados[i]);
             i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
         }
         ctx.strokeStyle = cor;
@@ -244,53 +227,44 @@ async function atualizarTudo() {
     document.getElementById('last-update').textContent = 'Atualizando...';
     
     try {
-        // === 1. DÓLAR ===
-        const urlUsd = https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=BRL&apikey=${API_KEY};
-        const respUsd = await fetch(urlUsd);
-        const dadosUsd = await respUsd.json();
+        // API que FUNCIONA no navegador — sem bloqueio CORS!
+        var url = 'https://v6.exchangerate-api.com/v6/94d996728082d5d7d39788a5/latest/USD';
+        var resp = await fetch(url);
+        var dados = await resp.json();
         
-        if (dadosUsd['Realtime Currency Exchange Rate']) {
-            const taxa = parseFloat(dadosUsd['Realtime Currency Exchange Rate']['5. Exchange Rate']);
-            if (!precoAbertura.usd) precoAbertura.usd = taxa;
-            const variacao = ((taxa / precoAbertura.usd) - 1) * 100;
-            atualizarGauge('wdo', variacao, 'var(--red)', 'R$ ' + taxa.toFixed(4));
+        if (dados && dados.conversion_rates) {
+            var r = dados.conversion_rates;
+            
+            // DÓLAR
+            if (r.BRL) {
+                if (!precoAbertura.usd) precoAbertura.usd = r.BRL;
+                var varUsd = ((r.BRL / precoAbertura.usd) - 1) * 100;
+                atualizarGauge('usd', varUsd, 'var(--red)', 'R$ ' + r.BRL.toFixed(4));
+            }
+            
+            // EURO
+            if (r.EUR && r.BRL) {
+                var eurBrl = r.BRL / r.EUR;
+                if (!precoAbertura.eur) precoAbertura.eur = eurBrl;
+                var varEur = ((eurBrl / precoAbertura.eur) - 1) * 100;
+                atualizarGauge('eur', varEur, 'var(--blue)', 'R$ ' + eurBrl.toFixed(4));
+            }
+            
+            // PESO ARGENTINO
+            if (r.ARS && r.BRL) {
+                var arsBrl = r.BRL / r.ARS;
+                if (!precoAbertura.ars) precoAbertura.ars = arsBrl;
+                var varArs = ((arsBrl / precoAbertura.ars) - 1) * 100;
+                atualizarGauge('ars', varArs, 'var(--fucsia)', 'R$ ' + arsBrl.toFixed(4));
+            }
         } else {
-            document.getElementById('wdo-status').textContent = 'Indisponível — tente depois';
-        }
-
-        // === 2. EURO ===
-        const urlEur = https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=EUR&to_currency=BRL&apikey=${API_KEY};
-        const respEur = await fetch(urlEur);
-        const dadosEur = await respEur.json();
-        
-        if (dadosEur['Realtime Currency Exchange Rate']) {
-            const taxa = parseFloat(dadosEur['Realtime Currency Exchange Rate']['5. Exchange Rate']);
-            if (!precoAbertura.eur) precoAbertura.eur = taxa;
-            const variacao = ((taxa / precoAbertura.eur) - 1) * 100;
-            atualizarGauge('eur', variacao, 'var(--blue)', 'R$ ' + taxa.toFixed(4));
-        } else {
-            document.getElementById('eur-status').textContent = 'Indisponível';
-        }
-
-        // === 3. BITCOIN ===
-        const urlBtc = https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=BTC&to_currency=USD&apikey=${API_KEY};
-        const respBtc = await fetch(urlBtc);
-        const dadosBtc = await respBtc.json();
-        
-        if (dadosBtc['Realtime Currency Exchange Rate']) {
-            const taxa = parseFloat(dadosBtc['Realtime Currency Exchange Rate']['5. Exchange Rate']);
-            if (!precoAbertura.btc) precoAbertura.btc = taxa;
-            const variacao = ((taxa / precoAbertura.btc) - 1) * 100;
-            atualizarGauge('btc', variacao, 'var(--fucsia)', '$ ' + taxa.toFixed(0));
-        } else {
-            document.getElementById('btc-status').textContent = 'Indisponível';
+            document.getElementById('usd-status').textContent = 'API sem resposta';
         }
     } catch (erro) {
         console.log('Erro:', erro);
-        document.getElementById('wdo-status').textContent = 'Erro de conexão';
+        document.getElementById('usd-status').textContent = 'Erro de conexão';
     }
     
-    atualizarZonas();
     atualizarGrafico();
     document.getElementById('last-update').textContent = new Date().toLocaleTimeString('pt-BR');
 }
