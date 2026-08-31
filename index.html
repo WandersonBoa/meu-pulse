@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nosso Pulse — WDO + WIN</title>
+    <title>Nosso Pulse — DÓLAR WDO + ÍNDICE WIN</title>
     <style>
         *{margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif;}
         :root{--bg:#0f1115; --card:#1a1d23; --border:#2a2d34; --green:#00c853; --red:#f44336; --yellow:#ffc107; --text:#e0e0e0; --muted:#888;}
@@ -15,7 +15,7 @@
         .card{background:var(--card); border-radius:12px; padding:25px; box-shadow:0 4px 15px rgba(0,0,0,.3);}
         .card-title{font-size:1.2rem; font-weight:bold; margin-bottom:20px; display:flex; justify-content:space-between;}
         .tag{font-size:.75rem; padding:4px 10px; border-radius:4px; background:var(--border);}
-        .value-display{font-size:2.5rem; font-weight:bold; text-align:center; margin:15px 0;}
+        .value-display{font-size:2.5rem; font-weight:bold; text-align:center; margin:15px 0; letter-spacing:1px;}
         .gauge-container{position:relative; height:40px; background:var(--border); border-radius:20px; margin:20px 0; overflow:hidden;}
         .gauge-fill{height:100%; border-radius:20px; transition:all .4s ease; width:0; position:absolute; left:50%;}
         .zero-line{position:absolute; top:0; bottom:0; width:2px; background:#fff; left:50%; transform:translateX(-50%); z-index:3;}
@@ -54,7 +54,7 @@
     <!-- IBOVESPA / WIN -->
     <div class="card">
         <div class="card-title" style="color:var(--green);">IBOVESPA <span class="tag">WINFUT</span></div>
-        <div class="value-display" id="win-value">Carregando...</div>
+        <div class="value-display" id="win-value">D — Carregando...</div>
         <div class="gauge-container">
             <div class="zero-line"></div>
             <div class="gauge-fill" id="win-gauge" style="background:var(--green);"></div>
@@ -66,7 +66,7 @@
     <!-- DÓLAR / WDO -->
     <div class="card">
         <div class="card-title" style="color:var(--red);">DÓLAR <span class="tag">WDOFUT</span></div>
-        <div class="value-display" id="wdo-value">Carregando...</div>
+        <div class="value-display" id="wdo-value">D — Carregando...</div>
         <div class="gauge-container">
             <div class="zero-line"></div>
             <div class="gauge-fill" id="wdo-gauge" style="background:var(--red);"></div>
@@ -81,13 +81,13 @@
     <div class="zone-block suportes">
         <h3>🟩 SUPORTES — Zonas de Compra</h3>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="sup1-price">—</span><span>WDO Suporte 1</span></div>
+            <div class="zone-header"><span class="zone-price" id="sup1-price">D — —</span><span>WDO Suporte 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:60%;"></div><div class="bar-pf" style="width:40%; background:var(--green);"></div></div>
             <div class="zone-label">Institucional: 60% | PF: 40%</div>
             <div class="zone-obs">Institucional comprando</div>
         </div>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="sup2-price">—</span><span>WIN Suporte 1</span></div>
+            <div class="zone-header"><span class="zone-price" id="sup2-price">D — —</span><span>WIN Suporte 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:35%;"></div><div class="bar-pf" style="width:65%; background:var(--green);"></div></div>
             <div class="zone-label">Institucional: 35% | PF: 65%</div>
             <div class="zone-obs">PF lidera compras</div>
@@ -97,13 +97,13 @@
     <div class="zone-block resistencias">
         <h3>🟥 RESISTÊNCIAS — Zonas de Venda</h3>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="res1-price">—</span><span>WDO Resistência 1</span></div>
+            <div class="zone-header"><span class="zone-price" id="res1-price">D — —</span><span>WDO Resistência 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:45%;"></div><div class="bar-pf" style="width:55%; background:var(--red);"></div></div>
             <div class="zone-label">Institucional: 45% | PF: 55%</div>
             <div class="zone-obs">PF vendendo</div>
         </div>
         <div class="zone-item">
-            <div class="zone-header"><span class="zone-price" id="res2-price">—</span><span>WIN Resistência 1</span></div>
+            <div class="zone-header"><span class="zone-price" id="res2-price">D — —</span><span>WIN Resistência 1</span></div>
             <div class="bar-container"><div class="bar-ie" style="width:70%;"></div><div class="bar-pf" style="width:30%; background:var(--red);"></div></div>
             <div class="zone-label">Institucional: 70% | PF: 30%</div>
             <div class="zone-obs">Institucional vendendo forte</div>
@@ -148,7 +148,7 @@ function atualizarGauge(id, valor, cor, precoTexto){
     
     fill.style.left = valor >= 0 ? '50%' : (pos - larg) + '%';
     fill.style.width = larg + '%';
-    display.textContent = precoTexto + '  (' + valor.toFixed(2) + '%)';
+    display.textContent = 'D — ' + precoTexto + '  (' + valor.toFixed(2) + '%)';
     display.style.color = cor;
     
     if(valor > 0.1){
@@ -167,10 +167,10 @@ function atualizarGauge(id, valor, cor, precoTexto){
 }
 
 function atualizarZonas(wdoPreco, winPreco) {
-    document.getElementById('sup1-price').textContent = (wdoPreco * 0.995).toFixed(4);
-    document.getElementById('sup2-price').textContent = Math.round(winPreco * 0.995);
-    document.getElementById('res1-price').textContent = (wdoPreco * 1.005).toFixed(4);
-    document.getElementById('res2-price').textContent = Math.round(winPreco * 1.005);
+    document.getElementById('sup1-price').textContent = 'D — ' + (wdoPreco * 0.995).toFixed(4);
+    document.getElementById('sup2-price').textContent = 'D — ' + Math.round(winPreco * 0.995);
+    document.getElementById('res1-price').textContent = 'D — ' + (wdoPreco * 1.005).toFixed(4);
+    document.getElementById('res2-price').textContent = 'D — ' + Math.round(winPreco * 1.005);
 }
 
 function atualizarGrafico() {
